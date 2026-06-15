@@ -1,0 +1,4 @@
+interface:
+  display_name: "OpenEnv Agentic RL"
+  short_description: "Connect agentic environments to TRL RL training and evaluation."
+  default_prompt: "Use $openenv-agentic-rl to design this environment-based agent training task."

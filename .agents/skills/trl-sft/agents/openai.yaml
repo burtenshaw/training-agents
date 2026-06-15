@@ -1,0 +1,4 @@
+interface:
+  display_name: "TRL SFT"
+  short_description: "Build SFT runs for agentic models."
+  default_prompt: "Use $trl-sft to design or implement this SFT training task."

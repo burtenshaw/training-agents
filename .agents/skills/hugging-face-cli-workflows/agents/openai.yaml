@@ -1,0 +1,4 @@
+interface:
+  display_name: "Hugging Face CLI Workflows"
+  short_description: "Use HF CLI for Hub, Jobs, and artifacts."
+  default_prompt: "Use $hugging-face-cli-workflows to handle this Hugging Face workflow."

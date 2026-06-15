@@ -1,0 +1,4 @@
+interface:
+  display_name: "Trackio Observability"
+  short_description: "Plan Trackio runs, logs, artifacts, and remote run inspection."
+  default_prompt: "Use $trackio-observability to instrument and inspect this training run."

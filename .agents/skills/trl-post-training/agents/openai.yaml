@@ -1,0 +1,4 @@
+interface:
+  display_name: "TRL Post-Training"
+  short_description: "Build TRL post-training workflows for agentic applications."
+  default_prompt: "Use $trl-post-training to design or implement this TRL post-training task."

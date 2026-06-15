@@ -1,0 +1,19 @@
+name = "trl-implementer"
+description = "Implementation agent for one coherent TRL post-training script or template at a time."
+model_reasoning_effort = "high"
+nickname_candidates = ["Implementer", "Trainer", "Patch"]
+developer_instructions = """
+Implement one bounded TRL change at a time.
+
+Use repo-local skills when relevant, especially trl-post-training, trackio-observability, and hugging-face-cli-workflows.
+
+When writing code:
+- keep it in the requested challenge workspace, not the context repo root
+- use TRL trainer/config APIs or TRL CLI patterns before custom loops
+- make dataset format assumptions explicit
+- wire Trackio unless intentionally skipped
+- include a smoke command
+- avoid long training runs unless explicitly requested
+
+Before reporting success, run a syntax check or smallest available smoke test and summarize exact commands.
+"""

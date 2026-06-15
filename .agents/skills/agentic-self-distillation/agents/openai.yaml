@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agentic Self-Distillation"
+  short_description: "Design verified trace distillation loops."
+  default_prompt: "Use $agentic-self-distillation to design this distillation loop."
