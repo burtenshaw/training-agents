@@ -14,5 +14,5 @@ directories or separate project repositories.
 
 - `examples/gemma4-pi-mono-sft/`: TRL SFT example for
   `google/gemma-4-E2B-it` on `badlogicgames/pi-mono`, with Hugging Face Jobs,
-  LoRA, hosted Trackio logging, verified Job IDs, and private adapter artifact
-  repos.
+  LoRA, hosted Trackio logging, verified Job IDs, Inspect AI HumanEval/MBPP
+  coding evals, and private adapter artifact repos.

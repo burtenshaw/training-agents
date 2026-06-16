@@ -18,6 +18,10 @@ commands, not datasets, checkpoints, logs, or generated outputs.
 - applies LoRA only to Gemma 4 language decoder projections
 - logs remote runs to Trackio Space `burtenshaw/pi-mono-sft-trackio`
 - pushes adapters to private Hub model repos
+- mirrors the selected best adapter to final repo
+  `burtenshaw/gemma-4-E2B-it-pi-mono-lora`
+- evaluates the final adapter with Inspect AI HumanEval and MBPP coding
+  benchmarks
 
 ## Files
 
@@ -99,6 +103,13 @@ Sweep variants:
 
 Dashboard: https://huggingface.co/spaces/burtenshaw/pi-mono-sft-trackio
 
+Final adapter repo:
+https://huggingface.co/burtenshaw/gemma-4-E2B-it-pi-mono-lora
+
+Selected variant: `lr2e4-r16-len4k`, chosen by lowest held-out eval loss.
+Final adapter mirror commit: `9e7aa2bf9c0ee7d76e3a09cada4ca9f5e34f9efc`.
+Model card eval-table commit: `de66c52f690f38d97d104bd8a19e03cfdeb6a467`.
+
 Smoke Job:
 
 - `6a2bec397c68f455eff13786`: completed 1 training step and verified 205
@@ -122,10 +133,104 @@ Dataset conversion for the 4k sweep:
 - reasoning parts ignored: 12,451
 - image parts omitted: 48
 
+## Inspect AI Coding Evals
+
+Use HumanEval and MBPP as the default post-SFT coding benchmarks for this
+example. They are small enough to run on Hugging Face Jobs with the Inspect
+local sandbox and directly test code generation with unit tests.
+
+Run the evals against the final LoRA adapter using Inspect's vLLM LoRA target
+syntax:
+
+```bash
+hf jobs run \
+  --flavor a10g-large \
+  --timeout 3h \
+  --detach \
+  --secrets HF_TOKEN \
+  --env HF_XET_HIGH_PERFORMANCE=1 \
+  --label project=pi-mono-sft \
+  --label kind=inspect-eval \
+  --label benchmark=humaneval \
+  vllm/vllm-openai:latest \
+  bash -lc '
+set -euo pipefail
+ln -sf "$(command -v python3)" /usr/local/bin/python
+python3 -m pip install -q --upgrade pip
+python3 -m pip install -q inspect-evals huggingface_hub pytest
+mkdir -p /tmp/inspect-logs
+inspect eval inspect_evals/humaneval \
+  --model vllm/google/gemma-4-E2B-it:burtenshaw/gemma-4-E2B-it-pi-mono-lora \
+  --sandbox local \
+  --max-samples 8 \
+  --max-connections 8 \
+  --max-tokens 768 \
+  --temperature 0 \
+  --seed 42 \
+  --no-fail-on-error \
+  --log-format json \
+  --log-level warning \
+  --log-dir /tmp/inspect-logs \
+  -M max_model_len=4096 \
+  -M gpu_memory_utilization=0.85 \
+  -M trust_remote_code=true \
+  -M dtype=float16
+python3 - <<'"'"'PY'"'"'
+import json, pathlib
+rows = []
+for path in sorted(pathlib.Path("/tmp/inspect-logs").glob("*.json")):
+    data = json.loads(path.read_text())
+    row = {
+        "task": data["eval"]["task"],
+        "dataset": data["eval"]["dataset"]["name"],
+        "samples": data["results"]["total_samples"],
+        "completed_samples": data["results"]["completed_samples"],
+        "status": data["status"],
+        "model": data["eval"]["model"],
+        "metrics": {},
+    }
+    for score in data["results"].get("scores", []):
+        for name, metric in score.get("metrics", {}).items():
+            row["metrics"][name] = metric.get("value")
+    rows.append(row)
+print("INSPECT_SUMMARY_JSON=" + json.dumps(rows, sort_keys=True))
+PY
+'
+```
+
+For MBPP, use the same command shape with these changes:
+
+- set `--timeout 4h`
+- change `--label benchmark=mbpp`
+- change the task to `inspect_evals/mbpp`
+- remove `--temperature 0` so the Inspect MBPP default remains
+  `temperature=0.5` with five epochs for pass@k
+
+Fetch results with:
+
+```bash
+hf jobs logs <job-id> --tail 3000
+```
+
+Copy the final scores into the model repo README table. Verified Inspect
+results for the selected adapter:
+
+| Benchmark | Dataset / split | Setting | Score | Job |
+| --- | --- | --- | ---: | --- |
+| HumanEval | `openai/openai_humaneval` test, 164 samples | accuracy / pass@1, `temperature=0.0` | `0.744 +/- 0.034` | `6a313894fb114ff24a387ee4` |
+| MBPP | `google-research-datasets/mbpp` sanitized test, 257 x 5 samples | mean accuracy, `temperature=0.5` | `0.651 +/- 0.030` | `6a31389efb114ff24a387ee6` |
+| MBPP | `google-research-datasets/mbpp` sanitized test, 257 x 5 samples | pass@1, `temperature=0.5` | `0.651 +/- 0.030` | `6a31389efb114ff24a387ee6` |
+| MBPP | `google-research-datasets/mbpp` sanitized test, 257 x 5 samples | pass@2, `temperature=0.5` | `0.653 +/- 0.030` | `6a31389efb114ff24a387ee6` |
+| MBPP | `google-research-datasets/mbpp` sanitized test, 257 x 5 samples | pass@5, `temperature=0.5` | `0.654 +/- 0.030` | `6a31389efb114ff24a387ee6` |
+
+BigCodeBench and SWE-bench are not part of this default example because their
+Inspect tasks require Docker-backed execution. Standard Hugging Face Jobs in
+this environment did not expose a Docker daemon.
+
 ## Known Limits
 
-- Metrics are held-out prompt/completion loss and token accuracy, not a
-  task-completion benchmark.
+- Training metrics are held-out prompt/completion loss and token accuracy.
+  Use the Inspect AI coding evals above for code-generation benchmark scores.
 - Raw traces should still be audited for secrets, private code, and policy
   concerns before treating this as a production recipe.
 - Overlength filtering drops many long-context examples at 4k.
