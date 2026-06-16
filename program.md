@@ -13,12 +13,11 @@ The program has two tracks that should reinforce each other:
 ## Progression
 
 1. Build SFT challenges for conversational and tool-calling datasets.
-2. Add preference data and reward modeling where comparisons are available.
-3. Move to GRPO for verifiable tasks with prompt-only datasets and reward
+2. Move to GRPO for verifiable tasks with prompt-only datasets and reward
    functions.
-4. Connect GRPO to OpenEnv-style environments for terminal, browser, API, or
+3. Connect GRPO to OpenEnv-style environments for terminal, browser, API, or
    other agentic loops.
-5. Distill from successful traces into future SFT or preference datasets.
+4. Distill from successful traces into future SFT or preference datasets.
 
 ## Operating Loop
 

@@ -26,18 +26,7 @@ Agentic variants:
 - concise planning traces
 - terminal/browser instruction following
 
-## 2. Preference Or Reward Modeling
-
-Goal: align the SFT model with higher-quality responses or safer tool behavior.
-
-Use:
-
-- DPO when chosen/rejected pairs are available
-- reward modeling when later RL needs a learned scorer
-- clear data provenance and split policies
-- pair construction that avoids trivial length or formatting shortcuts
-
-## 3. GRPO
+## 2. GRPO
 
 Goal: learn from generated groups and verifiable rewards.
 
@@ -57,7 +46,7 @@ Good early rewards:
 - tool-call schema validity
 - environment task success
 
-## 4. GRPO With Environments
+## 3. GRPO With Environments
 
 Goal: train agents that interact with a stateful harness.
 
@@ -69,7 +58,7 @@ Use:
 - train/eval environments with controlled seeds or held-out tasks
 - rollout traces that can later become distillation data
 
-## 5. Self-Distillation
+## 4. Self-Distillation
 
 Goal: improve future SFT/RL data from successful agent traces.
 
