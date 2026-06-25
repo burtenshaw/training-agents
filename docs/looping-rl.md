@@ -1,164 +1,207 @@
 # Looping RL
 
-Most reinforcement learning projects already have a loop at the center:
+The Terminal-Bench automation now has a target model size, a benchmark gate,
+and a record of previous runs. That is enough to launch experiments. It is not
+enough to make the experiments improve over time.
 
-1. sample behavior
-2. score it
-3. update the policy
-4. try again
+This post describes the loop around the training run. You will see how the
+automation uses memory, planning, execution, evaluation, and release rules to
+turn disconnected reinforcement learning experiments into a stateful training
+system. The examples use Terminal-Bench, TRL, OpenEnv, Trackio, Harbor, and
+Inspect, but the same pattern applies to other agent benchmarks.
 
-That loop is necessary, but it is not enough for agentic models. The training
-system around the model needs its own loop too. Otherwise the model may be
-learning, while the research process around it keeps forgetting what it already
-tried.
+## What Looping RL Means
 
-Looping RL is the practice of making the whole training operation iterative:
-the model, the environment, the evaluator, the experiment runner, the memory
-log, and the release gate all become part of the same feedback system.
+Reinforcement learning, or RL, trains a policy from feedback. A policy is the
+model behavior you get after the model chooses an action. The usual inner loop
+samples behavior, scores it, updates the policy, and samples again.
 
-## The Outer Loop
+Looping RL adds an outer loop around that process. The outer loop trains the
+research system that trains the model. It records what the last run proved,
+chooses the next experiment, executes it, checks the result, and writes down
+the next state.
 
-For Training Agents, the outer loop is simple:
+For the Training Agents project, the outer loop has six stages:
 
 `GOAL -> DISCOVER -> PLAN -> EXECUTE -> VERIFY -> ITERATE`
 
-The goal is concrete: train an approximately 2B open model to score above 40 on
-Terminal-Bench.
+The goal is concrete. Train an approximately 2B parameter open model to score
+above 40 on Terminal-Bench. Terminal-Bench is a benchmark for terminal-using
+agents. A proxy gate, such as TB Lite or a held-out OpenEnv taskset, can guide
+the loop before full benchmark scoring is available, but the report must label
+that result as a proxy.
 
-The discovery phase looks for current methods, not just convenient ones. It
-reads TRL examples, OpenEnv environments, Hugging Face Papers, Harbor, Inspect,
-and previous experiment logs. It should find the next rung, not restart the
-same work.
+## Why The Outer Loop Matters
 
-The planning phase turns that research into a bounded experiment: model,
-dataset, split policy, reward, evaluator, sweep size, Trackio project, artifact
-path, and the exact score gate.
+Agentic RL trains models to act through tools, environments, or multi-step
+workflows. It can show progress that does not transfer to the benchmark. A
+model can learn valid JSON and still call the wrong tool. It can create a file
+with the right name and the wrong contents. It can increase shaped reward and
+still score zero on held-out tasks.
 
-Execution launches the smallest run that can answer the question. If the smoke
-test fails, the loop should not scale. If a sweep runs, it should leave job
-ids, versions, logs, checkpoints, and artifacts.
+The inner training loop does not catch all of these failures. It asks whether a
+completion received reward under the current setup. The outer loop asks whether
+the setup measured the behavior you wanted.
 
-Verification is the hard boundary. Training reward is not a benchmark result.
-A checkpoint only matters if it improves on a held-out task, a proxy gate, or
-the real benchmark.
+Those questions are different. The outer loop should answer them explicitly:
 
-Iteration closes the loop. If the score does not move, the next run should
-change something material: model, reward, task grouping, data, environment,
-evaluator, or method. A near-duplicate rerun is not progress.
-
-## The Restaurant Test
-
-One useful way to think about loops is service reliability.
-
-A customer does not care that the kitchen made eggs, toast, and coffee in three
-separate internal workflows. They care that the whole order arrives together,
-warm, predictable, and complete.
-
-Agent training has the same shape. A good loop does not merely produce a
-checkpoint, a dashboard, or a clever reward function. It delivers the whole
-order:
-
-- a model
-- a benchmark result
-- a reproducible command
-- an artifact location
-- a dashboard
-- a release decision
-- a clear next step
-
-If any part is missing, the loop has not completed.
-
-## Why RL Needs This
-
-Agentic RL is full of false progress.
-
-A model can learn valid JSON without solving the task. It can call the right
-tool with the wrong argument. It can create output files that look plausible
-but fail hidden tests. It can get dense reward from a shaped proxy and still
-score zero on the benchmark.
-
-The answer is not just more compute. The answer is a better loop.
-
-The training loop asks, "Did this completion get reward?"
-
-The research loop asks harder questions:
-
-- Did this improve over the base model?
-- Did it improve on a held-out task?
-- Did it transfer from the curriculum to the proxy?
-- Did we avoid training on eval data?
-- Did the model learn task semantics or just syntax?
+- Did the checkpoint improve over the base model?
+- Did the result hold on a held-out split?
+- Did the model learn task semantics, or only action syntax?
+- Did the reward have useful variance?
+- Did the evaluator avoid training data and hidden labels?
 - Did the failure mode change?
-- What is the next controlled rung?
+- What should the next run change?
 
-That second loop is what keeps RL from becoming a pile of disconnected sweeps.
+When the automation answers these questions, each run can change the next run.
+Without those answers, the system repeats similar sweeps and calls them
+iteration.
 
-## Roles In The Loop
+## Goal And State
 
-The main agent should not do every role at once.
+The goal gives the loop a stopping rule. For this project, the final stopping
+rule is a Terminal-Bench score above 40 with reproducible logs and a
+release-ready checkpoint.
 
-The implementer builds one coherent training path. The runner executes commands
-and records failures. The tracker inspects Trackio, SLURM, logs, and artifacts.
-The environment builder defines the OpenEnv contract. The distillation designer
-turns verified traces into data. The evaluator checks whether the result is
-real.
+State gives the loop memory. The automation reads prior state before it
+researches or launches jobs. That state includes the automation memory file,
+`research/notes.md`, `research/results.tsv`, issue tables, Trackio dashboards,
+SLURM job ids, checkpoint paths, and release notes.
 
-For now, the evaluator role can be handled by `integrity-reviewer`. It should
-stay read-only and answer one question: is this score valid enough to change
-the loop state or release a checkpoint?
+The state should be specific enough to prevent duplicate work. A useful entry
+does not only say that a run failed. It says which model ran, which reward
+profile it used, which evaluator scored it, what metric moved, and what
+failure remained.
 
-That maker/checker split matters. Training jobs are allowed to be optimistic.
-Evaluators are not.
+After a run, the automation should be able to make one of these decisions:
 
-## State Is The Difference
+- scale the same rung because the smoke test passed
+- change the reward because there was no reward variance
+- change the evaluator because the proxy was too weak
+- change the data because syntax improved but task success stayed flat
+- change the model because capacity appears to be the bottleneck
+- release the checkpoint because a valid held-out score improved
 
-A prompt is stateless unless you paste the history back in.
+The next section turns that state into a plan.
 
-A loop has memory.
+## Planning The Run
 
-For Training Agents, that memory lives in experiment logs, result tables,
-issue tables, Trackio dashboards, job ids, checkpoint paths, and release notes.
-Every run should begin by reading it. Every run should end by updating it.
+The planning step converts the goal into one bounded experiment. A bounded
+experiment has a clear input, a clear output, and a clear decision rule.
 
-Without state, the automation repeats failed variants. With state, it can say:
+The plan should name the model and tokenizer, the training method, the dataset,
+the train and eval split, the reward function, the evaluator, the sweep size,
+the Trackio Space, the artifact path, and the score gate. It should also name
+the smallest smoke command that can fail before the full job consumes cluster
+time.
 
-- this reward had no variance
-- this syntax curriculum did not transfer
-- this model appears capacity-limited
-- this evaluator was too weak
-- this checkpoint improved a proxy but not the target
-- the next run should change the model, not the learning rate
+The project uses TRL-native methods. TRL is the Hugging Face library used here
+for supervised fine-tuning, preference optimization, and reinforcement
+learning. GRPO, or Group Relative Policy Optimization, is the main online RL
+method in the current loop because it can score multiple completions for the
+same prompt. OpenEnv provides environment boundaries for stateful tasks, such
+as terminal tasks with `reset`, `step`, and `state` operations.
 
-That is the difference between automation and a loop.
+A plan should use skills and sub-agents as working roles:
 
-## The Stop Condition
+- `$trl-post-training` selects the training method and trainer shape.
+- `$openenv-agentic-rl` defines the environment contract.
+- `$trackio-observability` defines run names, metrics, dashboards, and logs.
+- `$hugging-face-cli-workflows` handles Hub, Jobs, buckets, and artifacts.
+- `training-planner` proposes the rung and ablations.
+- `trl-implementer` writes one coherent training path.
+- `tracking-reporter` checks SLURM, Trackio, and artifacts.
+- `integrity-reviewer` checks the evaluator and release claim.
 
-Loops need stop conditions.
+The evaluator role is deliberately separate from implementation. The
+implementer can be optimistic while building. The evaluator should stay
+read-only and decide whether the result is valid enough to change the loop
+state.
 
-For Terminal-Bench, the target stop condition is a score above 40 with
-reproducible logs and a release-ready checkpoint. Proxy wins are useful, but
-they are not final success unless they are clearly labeled as proxy results.
+## Executing The Run
 
-There are also temporary stop conditions:
+Execution should answer the planned question with the smallest useful run. The
+first job should prove that tokenization, reward parsing, logging, and
+checkpoint saving work. A larger sweep should run only after that smoke test
+passes.
 
-- infrastructure is blocked
-- the current model family is the bottleneck
-- the evaluator is invalid
-- the reward is being gamed
-- the run produced no new information
+The Hopper cluster rules are part of the execution contract. One-node jobs run
+on `hopper-prod`. Jobs larger than one node run on `hopper-extra`. Routine jobs
+use only `low` or `normal` priority. The automation should use FSx-backed
+caches, virtual environments, run roots, and temporary directories so a node
+does not fail from local disk pressure.
 
-Stopping is not failure. Stopping without recording why is failure.
+Each remote run should leave these records:
 
-## Looping RL In One Sentence
+- the exact command or SLURM script
+- the SLURM job id
+- model, dataset, and library versions
+- the Trackio dashboard or reason tracking was skipped
+- the checkpoint or artifact path
+- the evaluator command
+- the result summary
 
-Looping RL means training the model and the training system at the same time:
-the policy improves from rewards, and the research process improves from
-verified outcomes.
+These records are not bookkeeping after the fact. They are the data the next
+loop uses.
 
-The point is not to run forever. The point is to make each pass harder to waste
-than the last.
+## Verifying The Result
+
+Verification checks whether the run changed benchmark behavior. It should use a
+separate evaluator whenever possible. A training reward can help optimize the
+model, but it should not be the release gate.
+
+The verification ladder is:
+
+1. smoke test for tokenization, reward parsing, logging, and checkpoint save
+2. held-out proxy gate, such as TB Lite or OpenThoughts-style held-out tasks
+3. Harbor, Inspect, or OpenEnv `tbench2` evaluation
+4. full Terminal-Bench score when infrastructure is available
+
+Harbor and Inspect are evaluation tools. Trackio is the experiment tracking
+surface. None of them replaces the benchmark gate. A checkpoint should move to
+release only when the evaluator shows improvement over the base model or the
+previous best adapter.
+
+The `integrity-reviewer` sub-agent should check this point before publication.
+It should look for train/eval leakage, hidden-label exposure, reward hacking,
+missing commands, unsupported claims, and proxy results presented as full
+benchmark results.
+
+## Iterating After Failure
+
+Most runs will not reach the final score. The loop still succeeds if it changes
+the next decision.
+
+A failed run should record the bottleneck. The bottleneck might be model
+capacity, data quality, reward design, environment behavior, evaluator
+coverage, or infrastructure. The next run should change the bottleneck, not
+only the learning rate.
+
+Some examples make the rule concrete. If reward variance is zero, redesign the
+prompt grouping or task sampling. If action syntax improves but task success
+stays flat, move to semantic data or a stronger model comparison. If a proxy
+score remains zero, do not claim Terminal-Bench progress. If a checkpoint beats
+the proxy but not the target, publish only if the README states the limitation.
+
+This iteration rule keeps the automation from repeating the same experiment
+with new labels.
+
+## Summary
+
+Looping RL treats the research operation as part of the training system. The
+model improves from rewards, and the automation improves from verified
+outcomes.
+
+This post covered the outer loop, the role of durable state, the structure of a
+bounded plan, the execution records each run must leave, and the evaluator gate
+that protects benchmark claims. The next document,
+`docs/terminal-bench-loop.md`, turns the same ideas into the operational
+contract for the recurring Terminal-Bench automation.
 
 ## References
+
+These posts inspired the framing around trusted loops and prompt-to-loop
+systems:
 
 - Lauren, "Loops You Can Trust":
   https://x.com/poteto/status/2069824386283319343
