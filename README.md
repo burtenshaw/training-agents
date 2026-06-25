@@ -16,3 +16,13 @@ directories or separate project repositories.
   `google/gemma-4-E2B-it` on `badlogicgames/pi-mono`, with Hugging Face Jobs,
   LoRA, hosted Trackio logging, verified Job IDs, Inspect AI HumanEval/MBPP
   coding evals, and private adapter artifact repos.
+
+## Guides
+
+- `program.md`: operating model for Training Agents.
+- `docs/program.md`: staged challenge ladder from SFT to environment GRPO and
+  self-distillation.
+- `docs/looping-rl.md`: blog post on loop-shaped reinforcement learning for
+  agent training systems.
+- `docs/terminal-bench-loop.md`: loop-shaped automation contract for training
+  an approximately 2B open model toward Terminal-Bench performance above 40.

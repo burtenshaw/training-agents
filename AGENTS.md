@@ -87,6 +87,23 @@ time to avoid conflicts.
 - Separate reward functions from environment transport. OpenEnv is an
   environment interoperability layer, not the reward definition itself.
 
+## Loop Automations
+
+- For the recurring Terminal-Bench objective, follow
+  `docs/terminal-bench-loop.md`.
+- Treat recurring work as a stateful loop:
+  `GOAL -> DISCOVER -> PLAN -> EXECUTE -> VERIFY -> ITERATE`.
+- Start by reading the automation memory and repo research logs, then choose
+  the next unblocked rung. Do not rerun a failed or completed variant unless
+  the method, model, data, reward, evaluator, or infrastructure has materially
+  changed.
+- Keep the maker/checker split explicit: implementation and training can be
+  done by the main agent or `trl-implementer`, but benchmark claims should be
+  reviewed by `integrity-reviewer` and run state should be checked by
+  `tracking-reporter` when sub-agents are requested.
+- If the Terminal-Bench score does not beat 40, write the failure mode and the
+  next loop state before ending the run.
+
 ## Reporting
 
 When changing this repo, report the context files changed and the validation

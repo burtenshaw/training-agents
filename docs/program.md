@@ -58,6 +58,16 @@ Use:
 - train/eval environments with controlled seeds or held-out tasks
 - rollout traces that can later become distillation data
 
+Terminal-Bench variants:
+
+- start with short-horizon terminal tasks before full Docker-mode scoring
+- keep training tasks separate from Terminal-Bench, TB Lite, and public eval
+  trajectories
+- log reward components such as valid action rate, verifier pass fraction,
+  artifact creation, and task success
+- advance only when the current rung shows nonzero reward variance and a
+  held-out proxy improvement
+
 ## 4. Self-Distillation
 
 Goal: improve future SFT/RL data from successful agent traces.
