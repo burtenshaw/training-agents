@@ -104,6 +104,30 @@ time to avoid conflicts.
 - If the Terminal-Bench score does not beat 40, write the failure mode and the
   next loop state before ending the run.
 
+### Code delivery loop (PR-bound changes)
+
+When a change is meant to land on the shared branch (repo context, course UI,
+gate, docs, skills, or other tracked code), follow this sequence in order:
+
+1. **Develop** — implement on a feature branch; keep the diff focused; run the
+   relevant checks or tests for what you changed.
+2. **PR** — open a pull request with a clear summary and test plan (do not merge
+   from a local-only commit path when a PR is the integration surface).
+3. **Review** — run a code review (reviewer subagent or equivalent) against the
+   PR/branch; address blocking findings before proceeding.
+4. **Simplify** — after review (or as a dedicated simplify pass on the same
+   branch), tighten the diff for clarity and consistency without changing
+   behavior; re-check if the simplify pass was non-trivial.
+5. **Merge only when ok** — merge only after review and simplify are
+   satisfactory (no open blocking review items; checks green or explicitly
+   waived with a documented reason). Do not merge solely because the code
+   “works on the agent machine.”
+
+This delivery loop does **not** replace the challenge operating loop
+(`GOAL -> DISCOVER -> PLAN -> EXECUTE -> VERIFY -> ITERATE`) or the
+Terminal-Bench loop in `docs/terminal-bench-loop.md`. Use those for experiment
+and automation state; use the delivery loop when shipping a PR.
+
 ## Reporting
 
 When changing this repo, report the context files changed and the validation

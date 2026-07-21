@@ -1,0 +1,5 @@
+{"id":"in_domain_001","category":"in_domain","prompt":"Explain supervised fine-tuning in one paragraph for a new ML engineer."}
+{"id":"in_domain_002","category":"in_domain","prompt":"Given a chat dataset with user and assistant messages, explain which tokens should receive loss during SFT and why."}
+{"id":"ood_001","category":"out_of_domain","prompt":"Write a short checklist for preparing for a hiking trip in cold weather."}
+{"id":"format_001","category":"format_stress","prompt":"Return only JSON with keys answer and caveat. Explain one risk of SFT."}
+{"id":"tool_001","category":"tool_schema","prompt":"You may call a search tool with schema {\"query\": string}. Produce the next tool call only for: find the latest TRL SFT documentation."}
