@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SFT Interactive Course For Agentic Models</title>
+  <style>
+
+    :root{--bg:#08111f;--panel:#101a2e;--surface:#fff;--surface2:#f6f8fc;--ink:#172033;--muted:#667085;--line:#d9e0ec;--accent:#6f4cff;--accent2:#00a7a7;--good:#0f8a55;--warn:#b76a00;--bad:#ba2f3a;--code:#0b1020;--shadow:0 20px 55px rgba(5,10,25,.18)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:radial-gradient(circle at top left,#293a73 0,transparent 34rem),linear-gradient(135deg,#08111f,#16233d 45%,#22345d);line-height:1.55}button,input,select,textarea{font:inherit}code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace}pre{margin:.7rem 0 0;padding:1rem;overflow:auto;color:#eef3ff;background:var(--code);border-radius:16px;border:1px solid rgba(255,255,255,.08)}textarea{resize:vertical;min-height:7rem}.app{display:grid;grid-template-columns:360px minmax(0,1fr);min-height:100vh}.sidebar{position:sticky;top:0;height:100vh;overflow:auto;padding:1rem;color:#fff;background:rgba(5,10,23,.83);border-right:1px solid rgba(255,255,255,.12);backdrop-filter:blur(16px)}.brand{display:flex;gap:.8rem;align-items:center;padding:.35rem .2rem 1rem}.logo{width:45px;height:45px;display:grid;place-items:center;border-radius:15px;background:linear-gradient(135deg,var(--accent),var(--accent2));font-weight:900;box-shadow:0 12px 32px rgba(111,76,255,.35)}.brand h1{margin:0;font-size:1.03rem;line-height:1.15}.brand p{margin:.15rem 0 0;color:#c7d0e5;font-size:.84rem}.progress-panel{padding:.95rem;border-radius:18px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);margin-bottom:1rem}.progress-bar{height:12px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.15)}.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .2s}.progress-label{margin-top:.55rem;color:#e8edfb;font-size:.9rem}.side-actions{display:flex;gap:.45rem;flex-wrap:wrap;margin-top:.7rem}.course-nav details{border-top:1px solid rgba(255,255,255,.1);padding:.45rem 0}.course-nav summary{cursor:pointer;font-weight:850;color:#eef3ff;padding:.45rem;border-radius:10px}.course-nav summary:hover{background:rgba(255,255,255,.08)}.lesson-links{display:grid;gap:.25rem;margin:.25rem 0 .45rem}.lesson-link{display:grid;grid-template-columns:1.2rem 1fr;gap:.5rem;align-items:start;width:100%;padding:.55rem .6rem;border:1px solid transparent;border-radius:12px;background:transparent;color:#eaf0ff;text-align:left;cursor:pointer}.lesson-link:hover,.lesson-link.active{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.13)}.lesson-link small{display:block;color:#b9c4dc;font-size:.76rem}.state-dot.done{color:#75e1ad}.state-dot.quiz{color:#ffd072}.main{padding:1.2rem}.home,.course-shell{max-width:1180px;margin:0 auto 1rem;border-radius:28px;box-shadow:var(--shadow)}.home{padding:clamp(1.5rem,4vw,3rem);color:#fff;background:radial-gradient(circle at 20% 15%,rgba(111,76,255,.48),transparent 28rem),radial-gradient(circle at 90% 20%,rgba(0,167,167,.28),transparent 28rem),rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14)}.home h2{margin:0 0 .7rem;max-width:980px;font-size:clamp(2rem,5vw,4.6rem);line-height:.95;letter-spacing:-.06em}.home p{max-width:880px;color:#dce5ff;font-size:1.08rem}.home-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-top:1.2rem}.home-card{padding:1rem;border-radius:18px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14)}.course-shell{background:rgba(255,255,255,.97);border:1px solid rgba(255,255,255,.75);overflow:hidden}.course-toolbar{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1rem 1.25rem;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#fff,#f5f7fc);position:sticky;top:0;z-index:2}.toolbar-title{font-weight:900;color:#34405c}.lesson{display:none;max-width:860px;margin:0 auto;padding:1.5rem}.lesson.active{display:block}.lesson-topline{display:flex;justify-content:space-between;gap:1rem;color:var(--muted);font-weight:800;font-size:.9rem}.lesson h2{margin:.45rem 0 1rem;font-size:clamp(1.8rem,4vw,3.15rem);line-height:1;letter-spacing:-.055em}.lesson-block{padding:1rem;margin:1rem 0;border:1px solid var(--line);border-radius:18px;background:var(--surface2)}.lesson-block h3{margin:0 0 .5rem;font-size:1.05rem}.lesson-block p:first-child{margin-top:0}.objective{background:#eef3ff;border-color:#d5ddff}.example{background:#fff8eb;border-color:#ffdca3}.activity{background:#ecfff6;border-color:#bcebd5}.quiz{background:#fff}.btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;padding:.65rem .9rem;color:#fff;background:var(--accent);border:0;border-radius:12px;font-weight:850;text-decoration:none;cursor:pointer;box-shadow:0 10px 24px rgba(111,76,255,.24)}.btn.secondary{background:#263554;box-shadow:none}.btn.ghost{color:var(--ink);background:#fff;border:1px solid var(--line);box-shadow:none}.btn.small{padding:.45rem .65rem;font-size:.9rem}.btn:disabled{opacity:.45;cursor:not-allowed}.btn:hover:not(:disabled){transform:translateY(-1px);filter:brightness(1.03)}.actions,.lesson-actions{display:flex;flex-wrap:wrap;gap:.65rem;margin-top:1rem}.lesson-actions{justify-content:space-between;border-top:1px solid var(--line);padding-top:1rem}.field{display:grid;gap:.35rem;color:#26334d;font-weight:800}.field input,.field select,.field textarea{width:100%;padding:.66rem .75rem;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem}.output{margin-top:.75rem;padding:1rem;border-radius:16px;background:#0b1020;color:#edf3ff;white-space:pre-wrap;overflow:auto}.option{display:block;width:100%;margin:.42rem 0;padding:.72rem;text-align:left;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:13px;cursor:pointer}.option.correct{background:#ecfff6;border-color:#87ddb4}.option.wrong{background:#fff0f1;border-color:#ffabb3}.feedback{margin-top:.5rem;min-height:1.4rem;font-weight:800}.pill-row{display:flex;flex-wrap:wrap;gap:.42rem;margin:.75rem 0}.pill{display:inline-flex;padding:.25rem .55rem;border-radius:999px;background:#eef2ff;border:1px solid #dbe2ff;color:#36416a;font-size:.84rem;font-weight:850}.token-demo{display:flex;flex-wrap:wrap;gap:.35rem;padding:.85rem;background:#fff;border:1px solid var(--line);border-radius:16px}.tok{padding:.22rem .43rem;border-radius:8px;font-size:.85rem;background:#edf1f8;color:#40506e;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}.tok.target{background:#dff8eb;color:#0c6e42;outline:1px solid #99dfbb}.tok.masked{background:#f1f3f8;color:#8b95a8;text-decoration:line-through}.choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}.choice{padding:.8rem;border:1px solid var(--line);border-radius:14px;background:#fff;cursor:pointer;text-align:left}.choice.selected{outline:3px solid rgba(111,76,255,.2);border-color:var(--accent)}table{width:100%;border-collapse:collapse}th,td{padding:.72rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:#eef2ff;color:#303b5e}.capstone{display:none;max-width:900px;margin:0 auto;padding:1.5rem}.capstone.active{display:block}.footer{color:#d9e2f8;text-align:center;padding:1.5rem}@media(max-width:1050px){.app{grid-template-columns:1fr}.sidebar{position:static;height:auto}.home-grid,.fields,.choice-grid{grid-template-columns:1fr}.main{padding:.8rem}.course-toolbar{position:static}}@media print{.sidebar,.course-toolbar,.actions,.lesson-actions,.btn,.copilot-dock{display:none!important}.app{display:block}body{background:#fff}.home,.course-shell{box-shadow:none}.lesson{display:block;break-inside:avoid}.capstone{display:block}}
+    /* Progress sidebar collapse (mirror copilot rail pattern) */
+    .sidebar{display:flex;flex-direction:column;min-width:0}
+    .sidebar-rail{display:none;flex:1;align-items:flex-start;justify-content:center;padding:.75rem .35rem}
+    .sidebar-expand-btn{width:38px;height:38px;border-radius:12px;border:1px solid rgba(255,255,255,.16);background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:900;cursor:pointer;box-shadow:0 10px 24px rgba(111,76,255,.28)}
+    .sidebar-panel{flex:1;min-height:0;min-width:0;overflow:auto}
+    .sidebar.is-collapsed{padding:.75rem .35rem;overflow:hidden}
+    .sidebar.is-collapsed .sidebar-panel{display:none}
+    .sidebar.is-collapsed .sidebar-rail{display:flex}
+    .brand{position:relative;padding-right:2.2rem}
+    .sidebar-collapse-btn{position:absolute;top:.35rem;right:.1rem;width:30px;height:30px;border-radius:10px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#eaf0ff;cursor:pointer;font-size:1.1rem;line-height:1}
+    .sidebar-collapse-btn:hover{background:rgba(255,255,255,.12)}
+    /* Layout grid: progress | lesson | copilot (440px open — wider than legacy 320px) */
+    .app.sidebar-collapsed{grid-template-columns:52px minmax(0,1fr)}
+    .app.has-copilot{grid-template-columns:360px minmax(0,1fr) 440px}
+    .app.has-copilot.copilot-collapsed{grid-template-columns:360px minmax(0,1fr) 52px}
+    .app.has-copilot.sidebar-collapsed{grid-template-columns:52px minmax(0,1fr) 440px}
+    .app.has-copilot.sidebar-collapsed.copilot-collapsed{grid-template-columns:52px minmax(0,1fr) 52px}
+    .copilot-dock{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;color:#eaf0ff;background:rgba(5,10,23,.9);border-left:1px solid rgba(255,255,255,.12);backdrop-filter:blur(16px);min-width:0;z-index:3}
+    .copilot-rail{display:none;flex:1;align-items:flex-start;justify-content:center;padding:.75rem .35rem}
+    .copilot-expand-btn{width:38px;height:38px;border-radius:12px;border:1px solid rgba(255,255,255,.16);background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:900;cursor:pointer;box-shadow:0 10px 24px rgba(111,76,255,.28)}
+    .copilot-panel{display:flex;flex-direction:column;height:100%;min-height:0;min-width:0;overflow:hidden}
+    .copilot-dock.is-collapsed .copilot-panel{display:none}
+    .copilot-dock.is-collapsed .copilot-rail{display:flex}
+    .copilot-header{padding:.85rem .9rem .7rem;border-bottom:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);min-width:0}
+    .copilot-title-row{display:flex;align-items:center;gap:.45rem;min-width:0}
+    .copilot-title{font-size:.95rem;letter-spacing:-.01em}
+    .copilot-status{margin-left:auto;display:inline-flex;align-items:center;padding:.18rem .5rem;border-radius:999px;font-size:.72rem;font-weight:850;text-transform:lowercase;border:1px solid transparent}
+    .copilot-status[data-status="online"]{background:rgba(15,138,85,.22);border-color:rgba(117,225,173,.35);color:#9af0c5}
+    .copilot-status[data-status="offline"]{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:#b9c4dc}
+    .copilot-status[data-status="busy"]{background:rgba(183,106,0,.22);border-color:rgba(255,208,114,.35);color:#ffd072}
+    .copilot-status[data-status="error"]{background:rgba(186,47,58,.22);border-color:rgba(255,171,179,.4);color:#ffb0b7}
+    .copilot-icon-btn{width:30px;height:30px;border-radius:10px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#eaf0ff;cursor:pointer;font-size:1.1rem;line-height:1;flex-shrink:0}
+    .copilot-icon-btn:hover{background:rgba(255,255,255,.12)}
+    .copilot-location{margin-top:.45rem;color:#b9c4dc;font-size:.78rem;font-weight:700;line-height:1.3;overflow-wrap:anywhere;word-break:break-word}
+    /* minmax(0,1fr) + min-width:0: grid/flex children default min-width:auto clips long tokens */
+    .copilot-messages-shell{position:relative;flex:1;min-height:0;min-width:0;display:flex;flex-direction:column}
+    .copilot-messages{flex:1;min-height:0;min-width:0;overflow-x:auto;overflow-y:auto;padding:.85rem;display:grid;grid-template-columns:minmax(0,1fr);gap:.65rem;align-content:start}
+    .copilot-empty{color:#b9c4dc;font-size:.88rem;line-height:1.45;padding:.35rem}
+    .copilot-msg{padding:.7rem .75rem;border-radius:14px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);min-width:0;max-width:100%;width:100%;overflow-wrap:anywhere;word-break:break-word;box-sizing:border-box;overflow-x:auto}
+    .copilot-msg--user{background:rgba(111,76,255,.18);border-color:rgba(111,76,255,.3)}
+    .copilot-msg--assistant{background:rgba(0,167,167,.12);border-color:rgba(0,167,167,.28)}
+    .copilot-msg--system{background:rgba(255,255,255,.04);color:#c7d0e5}
+    /* Live turn full contrast; stale history quieter via opacity + border (not color-only) — #25 */
+    .copilot-msg--live{opacity:1;box-shadow:0 0 0 1px rgba(255,255,255,.1)}
+    .copilot-msg--stale{opacity:.58;filter:saturate(.82);border-style:dashed}
+    .copilot-msg--stale .copilot-msg-role{opacity:.85}
+    .copilot-scroll-spacer{width:100%;min-width:0;pointer-events:none;flex-shrink:0}
+    .copilot-jump-latest{position:absolute;bottom:.7rem;left:50%;transform:translateX(-50%);z-index:4;padding:.4rem .75rem;border-radius:999px;border:1px solid rgba(255,255,255,.22);background:rgba(20,28,48,.94);color:#eef3ff;font-size:.78rem;font-weight:850;cursor:pointer;box-shadow:0 8px 22px rgba(0,0,0,.35);white-space:nowrap}
+    .copilot-jump-latest:hover{background:rgba(40,52,82,.98);border-color:rgba(111,76,255,.45)}
+    .copilot-jump-latest:focus{outline:2px solid rgba(111,76,255,.55);outline-offset:2px}
+    .copilot-jump-latest[hidden]{display:none!important}
+    .copilot-msg-role{font-size:.72rem;font-weight:850;color:#c7d0e5;margin-bottom:.28rem;text-transform:uppercase;letter-spacing:.04em}
+    .copilot-msg-body{min-width:0;max-width:100%;width:100%;overflow-wrap:anywhere;word-break:break-word;font-size:.9rem;line-height:1.45;box-sizing:border-box;overflow-x:auto}
+    .copilot-msg-body--plain{white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word}
+    .copilot-md{white-space:normal;min-width:0;max-width:100%;width:100%;overflow-wrap:anywhere;word-break:break-word;overflow-x:auto}
+    .copilot-md .copilot-md-h{margin:.15rem 0 .45rem;font-size:1rem;line-height:1.25;letter-spacing:-.02em;color:#f2f6ff;overflow-wrap:anywhere;word-break:break-word;max-width:100%}
+    .copilot-md h1.copilot-md-h{font-size:1.12rem}
+    .copilot-md h2.copilot-md-h{font-size:1.02rem}
+    .copilot-md h3.copilot-md-h{font-size:.95rem}
+    .copilot-md .copilot-md-p{margin:.2rem 0 .45rem;overflow-wrap:anywhere;word-break:break-word;max-width:100%}
+    .copilot-md .copilot-md-ul,.copilot-md .copilot-md-ol{margin:.25rem 0 .5rem;padding-left:1.15rem;max-width:100%;min-width:0}
+    .copilot-md .copilot-md-li{margin:.15rem 0;overflow-wrap:anywhere;word-break:break-word}
+    /* pre-wrap: mental-model / diagram fences must reflow in the narrow dock (screenshot clip) */
+    .copilot-md .copilot-md-pre{margin:.4rem 0 .55rem;padding:.65rem .7rem;border-radius:10px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.1);display:block;width:100%;max-width:100%;min-width:0;overflow-x:auto;overflow-y:auto;font-size:.78rem;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;box-sizing:border-box}
+    .copilot-md .copilot-md-codeblock{display:block;width:100%;max-width:100%;min-width:0;color:#e8edfb;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word}
+    .copilot-md .copilot-md-code{padding:.05rem .28rem;border-radius:5px;background:rgba(255,255,255,.1);font-size:.84em;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;overflow-wrap:anywhere;word-break:break-word;white-space:break-spaces}
+    .copilot-md .copilot-md-table-wrap{display:block;width:100%;max-width:100%;min-width:0;overflow-x:auto;overflow-y:hidden;margin:.4rem 0 .55rem;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.22);box-sizing:border-box}
+    .copilot-md .copilot-md-table{width:100%;min-width:min(100%,28rem);border-collapse:collapse;font-size:.82rem;line-height:1.4;color:#e8edfb}
+    .copilot-md .copilot-md-th,.copilot-md .copilot-md-td{padding:.4rem .55rem;border:1px solid rgba(255,255,255,.1);text-align:left;vertical-align:top;overflow-wrap:anywhere;word-break:break-word;max-width:18rem}
+    .copilot-md .copilot-md-th{font-weight:850;color:#f2f6ff;background:rgba(255,255,255,.08);white-space:nowrap}
+    .copilot-md .copilot-md-td{background:transparent}
+    .copilot-md .copilot-md-table tbody tr:nth-child(even) .copilot-md-td{background:rgba(255,255,255,.03)}
+    .copilot-md strong{font-weight:850;color:#fff}
+    .copilot-working{padding:.4rem .9rem;color:#ffd072;font-size:.82rem;font-weight:800;border-top:1px solid rgba(255,255,255,.08)}
+    .copilot-offline-help{padding:.65rem .9rem;margin:0 .75rem .5rem;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#e8edfb;font-size:.82rem;line-height:1.4;white-space:pre-wrap}
+    .copilot-compose{padding:.75rem .85rem .9rem;border-top:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.18);min-width:0}
+    .copilot-compose-chips{display:flex;flex-direction:column;gap:.4rem;margin-bottom:.5rem;min-width:0;max-width:100%}
+    .copilot-input{width:100%;padding:.65rem .7rem;border-radius:12px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.08);color:#eef3ff;resize:vertical;min-height:3.2rem;box-sizing:border-box}
+    .copilot-input::placeholder{color:#9aa8c3}
+    .copilot-input:focus{outline:2px solid rgba(111,76,255,.45);border-color:rgba(111,76,255,.55)}
+    .copilot-actions{display:flex;justify-content:space-between;gap:.5rem;margin-top:.55rem}
+    .copilot-compose .btn.ghost{color:#eaf0ff;background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.16)}
+    /* Grok-style paste chips: compact compose + transcript (issue #24) */
+    .copilot-paste-chip{min-width:0;max-width:100%;border-radius:10px;border:1px solid rgba(111,76,255,.35);background:rgba(111,76,255,.12);overflow:hidden;box-sizing:border-box}
+    .copilot-paste-chip-toggle{display:flex;flex-direction:column;align-items:flex-start;gap:.15rem;width:100%;padding:.45rem .55rem;margin:0;border:0;background:transparent;color:#eaf0ff;cursor:pointer;text-align:left;font:inherit;min-width:0;box-sizing:border-box}
+    .copilot-paste-chip-toggle:hover{background:rgba(255,255,255,.06)}
+    .copilot-paste-chip-label{font-size:.72rem;font-weight:800;letter-spacing:.02em;color:#d4c8ff;text-transform:lowercase}
+    .copilot-paste-chip-preview{font-size:.78rem;color:#c7d0e5;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .copilot-paste-chip-body{padding:0 .55rem .55rem;min-width:0;max-width:100%}
+    .copilot-paste-chip-full,.copilot-paste-chip-edit{display:block;width:100%;max-width:100%;min-width:0;margin:0;padding:.5rem .55rem;border-radius:8px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.28);color:#e8edfb;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.76rem;line-height:1.4;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;box-sizing:border-box;resize:vertical}
+    .copilot-paste-chip-edit{min-height:5rem}
+    .copilot-msg-body--user-compact{display:flex;flex-direction:column;gap:.4rem;white-space:normal}
+    .copilot-user-free-text{white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;min-width:0;max-width:100%}
+    @media(max-width:1050px){
+      .app.has-copilot,
+      .app.has-copilot.copilot-collapsed,
+      .app.has-copilot.sidebar-collapsed,
+      .app.has-copilot.sidebar-collapsed.copilot-collapsed,
+      .app.sidebar-collapsed{grid-template-columns:1fr}
+      .sidebar.is-collapsed{height:auto;padding:.65rem .85rem}
+      .sidebar.is-collapsed .sidebar-rail{justify-content:flex-start}
+      .copilot-dock{position:static;height:min(52vh,420px);border-left:0;border-top:1px solid rgba(255,255,255,.12);order:3}
+      .copilot-dock.is-collapsed{height:auto}
+      .copilot-dock.is-collapsed .copilot-rail{justify-content:flex-start;padding:.65rem .85rem}
+    }
+  
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="courseSidebar" aria-label="Course progress and navigation">
+    <div class="sidebar-rail" title="Show course progress">
+      <button type="button" class="sidebar-expand-btn" id="sidebarExpand" aria-label="Show course progress">☰</button>
+    </div>
+    <div class="sidebar-panel">
+      <div class="brand">
+        <div class="logo">SFT</div>
+        <div><h1>Interactive SFT Course</h1><p>Zero-to-hero SFT mentor path</p></div>
+        <button type="button" class="sidebar-collapse-btn" id="sidebarCollapse" aria-label="Hide course progress" title="Hide progress">‹</button>
+      </div>
+      <div class="progress-panel">
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-label" id="progressLabel">Loading…</div>
+        <div class="side-actions">
+          <button class="btn ghost small" id="resumeBtn">Resume</button>
+          <button class="btn ghost small" id="exportBtn">Export</button>
+          <button class="btn ghost small" id="resetBtn">Reset</button>
+        </div>
+      </div>
+      <nav class="course-nav" id="courseNav"></nav>
+    </div>
+  </aside>
+  <main class="main">
+    <section class="home" id="home">
+      <h2>Learn SFT end-to-end: concepts, finetune mechanics, evaluation, and how to task copilots.</h2>
+      <p>Self-contained HTML course with progress, quizzes, labs, and a capstone report. State saves in your browser. Companion scripts live in <code>examples/sft-mentor-lab/</code> for dataset inspection, LoRA smoke training, and rubric scoring sheets. You do not need to write trainers from scratch — you need to brief agents well and judge their outputs.</p>
+      <div class="actions">
+        <button class="btn" data-goto="o1">Start course</button>
+        <button class="btn secondary" id="continueBtn">Continue where I left off</button>
+        <button class="btn ghost" data-goto="capstone">View final project</button>
+      </div>
+      <div class="home-grid">
+        <div class="home-card"><strong>Outcomes</strong><p>How SFT works at the token level, how to finetune with TRL + LoRA/QLoRA, how to evaluate baseline-vs-SFT, and how to task/review agentic copilots.</p></div>
+        <div class="home-card"><strong>Integrity rule</strong><p>No agent-quality claim without clean splits, frozen eval prompts, saved logs/artifacts, and behavior evidence.</p></div>
+        <div class="home-card"><strong>Progress</strong><p id="homeProgress">Progress loads after page init.</p></div>
+      </div>
+    </section>
+    <section class="course-shell">
+      <div class="course-toolbar">
+        <div class="toolbar-title" id="toolbarTitle">Choose a lesson</div>
+        <div><button class="btn ghost small" id="printBtn">Print/PDF</button></div>
+      </div>
+      <div id="lessonRoot"></div>
+      <article class="capstone" id="lesson-capstone" data-lesson="capstone">
+        <div class="lesson-topline"><span>Final Project</span><span>Capstone</span></div>
+        <h2>Capstone report builder</h2>
+        <section class="lesson-block objective">
+          <h3>Goal</h3>
+          <p>Produce a cautious, reproducible report for one small SFT experiment — including how you tasked any copilot and which acceptance checks you used. Course progress and manual notes are not scientific evidence; attach commands, configs, logs, split manifests, artifacts, and eval outputs.</p>
+        </section>
+        <section class="lesson-block">
+          <h3>Report fields</h3>
+          <div class="fields">
+            <label class="field">Objective<input data-cap="objective" value="Teach a small model one agentic behavior with SFT."></label>
+            <label class="field">Target behavior<input data-cap="behavior" value="Tool-call formatting / recovery / final-answer quality"></label>
+            <label class="field">Base model<input data-cap="model" value="Qwen/Qwen2.5-0.5B-Instruct"></label>
+            <label class="field">Dataset and revision<input data-cap="dataset" value="trl-lib/Capybara or trace dataset + revision"></label>
+            <label class="field">Dataset format<input data-cap="format" value="messages / prompt-completion / text"></label>
+            <label class="field">Split policy<input data-cap="split" value="session/task/source-level split + seed"></label>
+            <label class="field">Masking choice<input data-cap="masking" value="assistant_only_loss / completion_only_loss / full LM"></label>
+            <label class="field">Artifact location<input data-cap="artifact" value="outputs/... or private Hub repo + revision"></label>
+            <label class="field">Tracking/logs<input data-cap="tracking" value="Trackio/local logs path"></label>
+            <label class="field">Eval protocol<input data-cap="eval" value="Frozen prompts, decoding settings, rubric, scorer"></label>
+          </div>
+          <label class="field" style="margin-top:.75rem">Cautious result claim<textarea data-cap="claim">Do not claim behavior improvement until baseline-vs-SFT rubric scoring is complete.</textarea></label>
+          <div class="actions">
+            <button class="btn" id="buildReport">Generate report</button>
+            <button class="btn ghost" id="copyReport">Copy report</button>
+            <button class="btn secondary" data-complete="capstone">Mark capstone complete</button>
+          </div>
+          <div class="output" id="reportOut"></div>
+        </section>
+      </article>
+    </section>
+    <p class="footer">Keep checkpoints, generated logs, datasets, score sheets, and full experiment outputs outside this tracked context repo. Prefer tasking copilots with copy-pasteable briefs and accepting only auditable artifacts.</p>
+  </main>
+</div>
+<script src="sft-course-lib.js"></script>
+<script src="sft-course-data.js"></script>
+<script src="sft-course-agui.js"></script>
+<script src="sft-course-paste-chips.js"></script>
+<script src="sft-course-copilot-scroll.js"></script>
+<script src="sft-course-copilot.js"></script>
+<script>
+(function () {
+  const Lib = window.SFTCourse;
+  const COURSE = window.SFT_COURSE_DATA;
+  if (!Lib || !COURSE) {
+    document.body.innerHTML = '<p style="padding:2rem;font-family:system-ui">Failed to load course scripts. Open this file from the docs/ directory (file:// is fine) so sft-course-lib.js and sft-course-data.js resolve next to this HTML.</p>';
+    return;
+  }
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  const KEY = 'sft-course-player-v3';
+  let state = load();
+  let currentView = "home"; // home | lesson | capstone
+  const playerListeners = [];
+  function notifyPlayer() {
+    if (!window.SFTCoursePlayer) return;
+    playerListeners.forEach((fn) => {
+      try { fn(window.SFTCoursePlayer.getContext()); } catch (e) { console.warn(e); }
+    });
+  }
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { return {}; }
+  }
+  function save() { localStorage.setItem(KEY, JSON.stringify(state)); }
+  function ensure() { state = Lib.ensureState(state, COURSE[0].id); }
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+  }
+  function grouped() {
+    const out = [];
+    for (const l of COURSE) {
+      let g = out.find(x => x.module === l.module);
+      if (!g) { g = { module: l.module, lessons: [] }; out.push(g); }
+      g.lessons.push(l);
+    }
+    return out;
+  }
+  function renderNav() {
+    const nav = $('#courseNav');
+    nav.innerHTML = grouped().map(g =>
+      `<details open><summary>${esc(g.module)}</summary><div class="lesson-links">${g.lessons.map(l =>
+        `<button class="lesson-link" data-goto="${l.id}"><span class="state-dot" data-dot="${l.id}">○</span><span><strong>${esc(l.title)}</strong><small>${esc(l.time)} · ${esc(l.level)}</small></span></button>`
+      ).join('')}</div></details>`
+    ).join('') +
+      `<details open><summary>Final Project</summary><div class="lesson-links"><button class="lesson-link" data-goto="capstone"><span class="state-dot" data-dot="capstone">◇</span><span><strong>Capstone report builder</strong><small>final project</small></span></button></div></details>`;
+  }
+  function activityHTML(kind, id) {
+    const out = `<div class="output" id="out-${id}"></div>`;
+    if (kind === 'behavior_picker') return `<div class="choice-grid"><button class="choice" data-act="${id}">Tool-call formatting</button><button class="choice" data-act="${id}">Recovery after tool failure</button><button class="choice" data-act="${id}">Concise trace summarization</button><button class="choice" data-act="${id}">Final-answer quality</button></div>${out}`;
+    if (kind === 'token_highlight' || kind === 'masking_simulator') return `<div class="actions"><button class="btn small" data-mask="assistant">Assistant-only</button><button class="btn small ghost" data-mask="completion">Completion-only</button><button class="btn small ghost" data-mask="full">Full LM</button></div><div class="token-demo" id="tokens-${id}"></div>${out}`;
+    if (kind === 'claim_classifier' || kind === 'claim_builder') return `<div class="fields"><label class="field">Claim<select id="claim-${id}"><option value="loss">Train loss went down, so the agent is better.</option><option value="smoke">The smoke run completed and saved an adapter.</option><option value="tool">Tool calling improved on a frozen tool eval.</option></select></label></div><button class="btn small" data-run="claim" data-id="${id}">Classify</button>${out}`;
+    if (kind === 'method_chooser') return `<div class="fields"><label class="field">Evidence/data<select id="method-${id}"><option value="demo">Successful demonstrations</option><option value="pref">Chosen/rejected pairs</option><option value="reward">Verifiable reward/tests</option><option value="trace">Verified successful rollouts</option></select></label></div><button class="btn small" data-run="method" data-id="${id}">Choose method</button>${out}`;
+    if (kind === 'dataset_classifier') return `<div class="fields"><label class="field">Columns<select id="cols-${id}"><option value="messages">messages</option><option value="pc">prompt + completion</option><option value="text">text</option><option value="trace">raw trace JSON</option></select></label><label class="field">Target<select id="target-${id}"><option value="assistant">assistant only</option><option value="completion">completion only</option><option value="all">all tokens</option><option value="tool">tool/recovery</option></select></label></div><button class="btn small" data-run="dataset" data-id="${id}">Recommend</button>${out}`;
+    if (kind === 'split_simulator') return `<div class="fields"><label class="field">Data source<select id="split-${id}"><option value="trace">agent traces with many turns per session</option><option value="bench">benchmark problems with variants</option><option value="independent">independent one-shot prompts</option></select></label></div><button class="btn small" data-run="split" data-id="${id}">Check split policy</button>${out}`;
+    if (kind === 'converter_lab' || kind === 'trace_triage') return `<label class="field">Paste/describe a raw example<textarea id="raw-${id}" placeholder="Example, trace, or tool transcript..."></textarea></label><button class="btn small" data-run="convert" data-id="${id}">Get conversion checklist</button>${out}`;
+    if (kind === 'template_renderer') return `<label class="field">Messages JSON<textarea id="msg-${id}">[{"role":"user","content":"Explain SFT."},{"role":"assistant","content":"SFT trains on target responses."}]</textarea></label><button class="btn small" data-run="template" data-id="${id}">Render conceptually</button>${out}`;
+    if (kind === 'truncation_checker') return `<div class="fields"><label class="field">Token count<input id="tok-${id}" type="number" value="4096"></label><label class="field">Max length<input id="max-${id}" type="number" value="2048"></label><label class="field">Target position<select id="pos-${id}"><option value="end">near end</option><option value="middle">middle</option><option value="start">near start</option></select></label></div><button class="btn small" data-run="trunc" data-id="${id}">Check</button>${out}`;
+    if (kind === 'tool_validator') return `<label class="field">Tool call JSON<textarea id="tool-${id}">{"name":"search_web","arguments":{"query":"TRL SFT"}}</textarea></label><label class="field">Available tool name<input id="toolname-${id}" value="search"></label><button class="btn small" data-run="tool" data-id="${id}">Validate</button>${out}`;
+    if (kind === 'pipeline_match' || kind === 'config_builder') return `<div class="fields"><label class="field">Model<input id="model-${id}" value="Qwen/Qwen2.5-0.5B-Instruct"></label><label class="field">Dataset<input id="data-${id}" value="trl-lib/Capybara"></label><label class="field">Steps<input id="steps-${id}" type="number" value="5"></label><label class="field">Output<input id="path-${id}" value="outputs/sft-mentor-smoke"></label></div><button class="btn small" data-run="config" data-id="${id}">Build smoke command</button>${out}`;
+    if (kind === 'training_triage') return `<div class="fields"><label class="field">Train loss<select id="train-${id}"><option value="down">down</option><option value="flat">flat</option><option value="nan">NaN/exploding</option></select></label><label class="field">Eval loss<select id="eval-${id}"><option value="down">stable/down</option><option value="up">rising</option><option value="none">no eval</option></select></label><label class="field">Artifact<select id="art-${id}"><option value="saved">saved outside repo</option><option value="missing">missing</option><option value="repo">inside tracked repo</option></select></label></div><button class="btn small" data-run="triage" data-id="${id}">Triage</button>${out}`;
+    if (kind === 'eval_protocol') return `<div class="choice-grid"><button class="choice" data-act="${id}">Freeze prompts before training</button><button class="choice" data-act="${id}">Use same decoding for baseline and SFT</button><button class="choice" data-act="${id}">Report all categories</button><button class="choice" data-act="${id}">Separate format from correctness</button></div>${out}`;
+    if (kind === 'score_interpreter') return `<div class="fields"><label class="field">Baseline /10<input id="base-${id}" type="number" value="5" step="0.1"></label><label class="field">SFT /10<input id="sft-${id}" type="number" value="6.5" step="0.1"></label><label class="field">OOD delta<input id="ood-${id}" type="number" value="0" step="0.1"></label></div><button class="btn small" data-run="score" data-id="${id}">Interpret</button>${out}`;
+    if (kind === 'task_brief_builder') return `<div class="fields"><label class="field">Target behavior<input id="brief-beh-${id}" value="tool-call formatting"></label><label class="field">Model<input id="brief-model-${id}" value="Qwen/Qwen2.5-0.5B-Instruct"></label><label class="field">Dataset<input id="brief-data-${id}" value="trl-lib/Capybara"></label></div><button class="btn small" data-run="brief" data-id="${id}">Generate task brief</button>${out}`;
+    if (kind === 'acceptance_checklist') return `<div class="choice-grid"><button class="choice" data-act="${id}">Adapter path reloads</button><button class="choice" data-act="${id}">Eval dataset present if eval_strategy on</button><button class="choice" data-act="${id}">Frozen baseline-vs-SFT pack</button><button class="choice" data-act="${id}">Non-claims listed for smoke</button></div>${out}`;
+    if (kind === 'review_failure_modes') return `<div class="fields"><label class="field">Failure mode<select id="fail-${id}"><option value="silent_wrong_shape">Silent wrong dataset shape</option><option value="missing_eval">Missing eval_dataset</option><option value="no_adapter_load">Adapter not loaded in SFT eval</option><option value="cherry_eval">Cherry-picked eval prompts</option><option value="overclaim">Overclaim from train loss</option></select></label></div><button class="btn small" data-run="fail" data-id="${id}">Review fix</button>${out}`;
+    return `<p>Use the lesson concepts, then answer the quiz and reflection.</p>${out}`;
+  }
+  function renderLessons() {
+    const root = $('#lessonRoot');
+    root.innerHTML = COURSE.map((l, i) => `
+      <article class="lesson" id="lesson-${l.id}" data-lesson="${l.id}">
+        <div class="lesson-topline"><span>${esc(l.module)}</span><span>${esc(l.time)} · ${esc(l.level)}</span></div>
+        <h2>${esc(l.title)}</h2>
+        <section class="lesson-block objective"><h3>By the end, you can</h3><ul>${l.objectives.map(o => `<li>${esc(o)}</li>`).join('')}</ul></section>
+        <section class="lesson-block"><h3>Why this matters</h3><p>${esc(l.why)}</p></section>
+        <section class="lesson-block"><h3>Core lesson</h3>${l.body.map(p => `<p>${esc(p)}</p>`).join('')}</section>
+        <section class="lesson-block example"><h3>Concrete example</h3><p>${esc(l.example)}</p></section>
+        <section class="lesson-block activity" data-activity="${l.activity}"><h3>Try it</h3><div class="activity-root"></div></section>
+        <section class="lesson-block quiz" data-quiz="${l.id}"><h3>Quiz</h3><p>${esc(l.quiz.q)}</p><div class="options">${l.quiz.options.map(o => `<button class="option" data-correct="${o[1]}" data-feedback="${esc(o[2])}">${esc(o[0])}</button>`).join('')}</div><div class="feedback" aria-live="polite"></div></section>
+        <section class="lesson-block"><h3>Reflection</h3><label class="field">${esc(l.reflection)}<textarea data-note="${l.id}" placeholder="Write a short note. It saves locally."></textarea></label></section>
+        <div class="lesson-actions">
+          <button class="btn ghost" data-goto="${i ? COURSE[i - 1].id : ''}" ${i ? '' : 'disabled'}>← Previous</button>
+          <button class="btn" data-complete="${l.id}">Mark complete</button>
+          <button class="btn secondary" data-goto="${i === COURSE.length - 1 ? 'capstone' : COURSE[i + 1].id}">Next →</button>
+        </div>
+      </article>`).join('');
+  }
+  function updateProgress() {
+    ensure();
+    const pct = Lib.progressPercent(state, COURSE);
+    $('#progressFill').style.width = pct + '%';
+    $('#progressLabel').textContent = Lib.progressLabel(state, COURSE);
+    $('#homeProgress').textContent = Lib.completedCount(state) + '/' + Lib.lessonCount(COURSE) + ' lessons complete. Next: ' + Lib.nextLessonTitle(state, COURSE);
+    $$('[data-dot]').forEach(d => {
+      const id = d.dataset.dot;
+      d.textContent = state.completed[id] ? '✓' : state.quiz[id] ? '●' : '○';
+      d.className = 'state-dot ' + (state.completed[id] ? 'done' : state.quiz[id] ? 'quiz' : '');
+    });
+  }
+  function showLesson(id) {
+    ensure();
+    if (!id) id = state.last || COURSE[0].id;
+    $$('.lesson,.capstone').forEach(l => l.classList.remove('active'));
+    let el = id === 'capstone' ? $('#lesson-capstone') : $('#lesson-' + CSS.escape(id));
+    if (!el) el = $('#lesson-' + COURSE[0].id);
+    el.classList.add('active');
+    state.last = id === 'capstone' ? 'capstone' : id;
+    currentView = id === 'capstone' ? 'capstone' : 'lesson';
+    save();
+    const meta = COURSE.find(l => l.id === id);
+    $('#toolbarTitle').textContent = id === 'capstone' ? 'Final Project' : (meta.module + ' · ' + meta.title);
+    $$('.lesson-link').forEach(b => b.classList.toggle('active', b.dataset.goto === id));
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    notifyPlayer();
+  }
+  function initPersistence() {
+    ensure();
+    $$('[data-note]').forEach(n => {
+      n.value = state.notes[n.dataset.note] || '';
+      n.addEventListener('input', () => { state.notes[n.dataset.note] = n.value; save(); });
+    });
+    $$('[data-cap]').forEach(f => {
+      if (state.capstone[f.dataset.cap]) f.value = state.capstone[f.dataset.cap];
+      f.addEventListener('input', () => { state.capstone[f.dataset.cap] = f.value; save(); });
+    });
+    updateProgress();
+  }
+  function initNav() {
+    $$('[data-goto]').forEach(b => b.addEventListener('click', () => showLesson(b.dataset.goto)));
+    $('#continueBtn').onclick = () => showLesson(state.last || COURSE[0].id);
+    $('#resumeBtn').onclick = () => showLesson(state.last || COURSE[0].id);
+  }
+  function initComplete() {
+    $$('[data-complete]').forEach(b => b.addEventListener('click', () => {
+      state.completed[b.dataset.complete] = true;
+      state.last = b.dataset.complete;
+      save();
+      updateProgress();
+      notifyPlayer();
+      b.textContent = 'Completed ✓';
+    }));
+  }
+  function initQuiz() {
+    $$('.quiz').forEach(q => {
+      $$('.option', q).forEach(o => o.addEventListener('click', () => {
+        const option = [o.textContent, o.dataset.correct === 'true', o.dataset.feedback];
+        const result = Lib.scoreQuizOption(option);
+        $$('.option', q).forEach(x => x.classList.remove('correct', 'wrong'));
+        o.classList.add(result.correct ? 'correct' : 'wrong');
+        const fb = $('.feedback', q);
+        fb.textContent = result.message;
+        fb.style.color = result.correct ? 'var(--good)' : 'var(--bad)';
+        if (result.correct) {
+          state.quiz[q.dataset.quiz] = true;
+          save();
+          updateProgress();
+          notifyPlayer();
+        }
+      }));
+    });
+  }
+  function setActivity(id, txt) {
+    state.activities[id] = txt;
+    save();
+  }
+  function renderTokens(id, mode) {
+    const root = $('#tokens-' + id);
+    if (!root) return;
+    const toks = [['<user>', 'p'], ['Explain', 'p'], ['SFT', 'p'], ['</user>', 'p'], ['<assistant>', 'a'], ['SFT', 'a'], ['imitates', 'a'], ['target', 'a'], ['tokens', 'a'], ['</assistant>', 'a']];
+    root.innerHTML = '';
+    toks.forEach(([t, r]) => {
+      const e = document.createElement('span');
+      e.className = 'tok ' + Lib.tokenMaskClass(r, mode);
+      e.textContent = t;
+      e.title = e.classList.contains('target') ? 'label is token id; loss applies' : 'label is -100; ignored';
+      root.appendChild(e);
+    });
+    const out = $('#out-' + id);
+    if (out) {
+      const msg = mode === 'full' ? 'Full LM: all non-pad tokens are targets.' : mode === 'completion' ? 'Completion-only: treat prompt/context as ignored labels.' : 'Assistant-only: assistant span is target; context ignored when template supports it.';
+      out.textContent = msg;
+      setActivity(id, msg);
+    }
+  }
+  function bindActivities() {
+    $$('[data-mask]').forEach(b => b.onclick = () => renderTokens(b.closest('[data-lesson]').dataset.lesson, b.dataset.mask));
+    $$('.choice').forEach(c => c.onclick = () => {
+      c.classList.toggle('selected');
+      const id = c.dataset.act;
+      const selected = $$(`[data-act="${id}"].selected`).map(x => x.textContent.trim()).join(', ');
+      $('#out-' + id).textContent = selected ? 'Selected: ' + selected : 'No selections yet';
+      setActivity(id, selected);
+    });
+    $$('[data-run]').forEach(b => b.onclick = () => runActivity(b.dataset.run, b.dataset.id));
+  }
+  function runActivity(kind, id) {
+    let inputs = {};
+    if (kind === 'claim') inputs = { claim: $('#claim-' + id).value };
+    if (kind === 'method') inputs = { method: $('#method-' + id).value };
+    if (kind === 'dataset') inputs = { columns: $('#cols-' + id).value, target: $('#target-' + id).value };
+    if (kind === 'split') inputs = { source: $('#split-' + id).value };
+    if (kind === 'convert') inputs = {};
+    if (kind === 'template') inputs = {};
+    if (kind === 'trunc') inputs = { tokens: $('#tok-' + id).value, maxLength: $('#max-' + id).value, position: $('#pos-' + id).value };
+    if (kind === 'tool') inputs = { toolJson: $('#tool-' + id).value, availableName: $('#toolname-' + id).value };
+    if (kind === 'config') inputs = { model: $('#model-' + id).value, dataset: $('#data-' + id).value, output: $('#path-' + id).value, steps: $('#steps-' + id).value };
+    if (kind === 'triage') inputs = { train: $('#train-' + id).value, eval: $('#eval-' + id).value, artifact: $('#art-' + id).value };
+    if (kind === 'score') inputs = { baseline: $('#base-' + id).value, sft: $('#sft-' + id).value, ood: $('#ood-' + id).value };
+    if (kind === 'brief') inputs = { behavior: $('#brief-beh-' + id).value, model: $('#brief-model-' + id).value, dataset: $('#brief-data-' + id).value };
+    if (kind === 'fail') inputs = { mode: $('#fail-' + id).value };
+    const txt = Lib.runActivityPure(kind, inputs);
+    $('#out-' + id).textContent = txt;
+    setActivity(id, txt);
+  }
+  function initActivities() {
+    $$('.activity[data-activity]').forEach(a => {
+      const id = a.closest('[data-lesson]').dataset.lesson;
+      $('.activity-root', a).innerHTML = activityHTML(a.dataset.activity, id);
+    });
+    bindActivities();
+    renderTokens('m1l1', 'assistant');
+    renderTokens('m3l3', 'assistant');
+  }
+  function buildReport() {
+    const cap = {};
+    $$('[data-cap]').forEach(f => { cap[f.dataset.cap] = f.value; });
+    const report = Lib.buildReportText(cap, state.notes);
+    $('#reportOut').textContent = report;
+  }
+  function initCapstone() {
+    $('#buildReport').onclick = buildReport;
+    $('#copyReport').onclick = async () => {
+      buildReport();
+      try {
+        await navigator.clipboard.writeText($('#reportOut').textContent);
+        $('#copyReport').textContent = 'Copied';
+        setTimeout(() => $('#copyReport').textContent = 'Copy report', 1200);
+      } catch (e) {
+        $('#copyReport').textContent = 'Copy failed';
+      }
+    };
+    buildReport();
+  }
+  function initUtility() {
+    $('#exportBtn').onclick = () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'sft-course-progress.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    };
+    $('#resetBtn').onclick = () => {
+      if (confirm('Reset local course progress?')) {
+        window.SFTCoursePlayer.resetProgressAndCopilot();
+      }
+    };
+    $('#printBtn').onclick = () => window.print();
+  }
+  function setSidebarCollapsed(collapsed) {
+    const app = document.querySelector('.app');
+    const side = document.getElementById('courseSidebar');
+    const classes = Lib.sidebarCollapsedDomClasses(!!collapsed);
+    if (app) {
+      app.classList.toggle('sidebar-collapsed', !!collapsed);
+    }
+    if (side) {
+      side.classList.toggle('is-collapsed', !!collapsed);
+    }
+    try {
+      localStorage.setItem(
+        Lib.SIDEBAR_COLLAPSED_KEY,
+        Lib.sidebarCollapsedStorageValue(!!collapsed)
+      );
+    } catch (_) {}
+    return classes;
+  }
+  function initSidebarCollapse() {
+    let collapsed = false;
+    try {
+      collapsed = Lib.parseSidebarCollapsed(
+        localStorage.getItem(Lib.SIDEBAR_COLLAPSED_KEY)
+      );
+    } catch (_) {
+      collapsed = false;
+    }
+    setSidebarCollapsed(collapsed);
+    const collapseBtn = $('#sidebarCollapse');
+    const expandBtn = $('#sidebarExpand');
+    if (collapseBtn) {
+      collapseBtn.onclick = () => setSidebarCollapsed(true);
+    }
+    if (expandBtn) {
+      expandBtn.onclick = () => setSidebarCollapsed(false);
+    }
+  }
+  window.SFTCoursePlayer = {
+    getState() { return JSON.parse(JSON.stringify(state)); },
+    getContext() {
+      return Lib.buildCourseContext(state, {
+        view: currentView,
+        lessonId: state.last || null,
+      }, COURSE);
+    },
+    subscribe(fn) {
+      playerListeners.push(fn);
+      return () => {
+        const i = playerListeners.indexOf(fn);
+        if (i >= 0) playerListeners.splice(i, 1);
+      };
+    },
+    async resetProgressAndCopilot() {
+      localStorage.removeItem(KEY);
+      localStorage.removeItem("sft-course-copilot-ui-v1");
+      try { await fetch("/session/reset", { method: "POST" }); } catch (_) {}
+      location.reload();
+    },
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const struct = Lib.validateCourseStructure(COURSE);
+    if (!struct.ok) console.error('Course structure errors', struct.errors);
+    ensure();
+    renderNav();
+    renderLessons();
+    initPersistence();
+    initNav();
+    initComplete();
+    initQuiz();
+    initActivities();
+    initCapstone();
+    initUtility();
+    initSidebarCollapse();
+    updateProgress();
+    showLesson(state.last || COURSE[0].id);
+    if (window.SFTCourseCopilot) window.SFTCourseCopilot.init({ player: window.SFTCoursePlayer });
+  });
+})();
+</script>
+</body>
+</html>

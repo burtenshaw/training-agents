@@ -237,3 +237,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Isolated git worktrees
+.worktrees/

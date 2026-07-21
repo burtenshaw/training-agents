@@ -5,7 +5,9 @@ agentic reinforcement learning and distillation.
 
 ## 1. SFT
 
-Goal: teach the model the interaction format and basic task behavior.
+Goal: teach the model the interaction format and basic task behavior. For a
+structured learning path and run-evaluation rubric, use
+`docs/sft-interactive-playbook.html`.
 
 Use:
 
