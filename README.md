@@ -26,3 +26,7 @@ directories or separate project repositories.
   agent training systems.
 - `docs/terminal-bench-loop.md`: loop-shaped automation contract for training
   an approximately 2B open model toward Terminal-Bench performance above 40.
+
+- `examples/sergio-training-agents/`: source-preserving Apache-2.0 imports of
+  Sergio Paniego's Training Agents Class 2 (distillation), Class 3 (GRPO), and
+  Class 4 (RL environments) examples, with source revisions and file hashes.
