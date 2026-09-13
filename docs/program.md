@@ -16,7 +16,7 @@ Use:
 - Trackio for loss, token accuracy, and throughput
 - trace training with reviewed Hub agent traces, for example
   `trl sft --dataset_name julien-c/synthtraces`
-- reusable trace-training examples under `examples/`, such as the Gemma 4
+- the [SFT on traces tutorial](../tutorials/01-sft-on-traces/) for the Gemma 4
   Pi-Mono SFT runbook
 
 Agentic variants:

@@ -3,19 +3,29 @@
 Public Codex context for agentic post-training work with TRL.
 
 This repository contains reusable instructions, sub-agent definitions, skills,
-and lightweight guides for planning, implementing, reviewing, and monitoring
-agent training workflows.
+lightweight guides, and practical tutorials for planning, implementing,
+reviewing, and monitoring agent-training workflows.
 
 It is not a training codebase. Keep checkpoints, datasets, logs, and experiment
 outputs outside the tracked repo, usually under ignored `workspaces/`
 directories or separate project repositories.
 
-## Examples
+## Tutorials
 
-- `examples/gemma4-pi-mono-sft/`: TRL SFT example for
-  `google/gemma-4-E2B-it` on `badlogicgames/pi-mono`, with Hugging Face Jobs,
-  LoRA, hosted Trackio logging, verified Job IDs, Inspect AI HumanEval/MBPP
-  coding evals, and private adapter artifact repos.
+Follow the four practical [Training Agents tutorials](tutorials/) in order:
+
+1. [SFT on traces](tutorials/01-sft-on-traces/) — Gemma 4 fine-tuning on
+   pi-mono coding-agent traces.
+2. [Distillation](tutorials/02-distillation/) — off-policy logit KD and
+   on-policy GKD.
+3. [Reinforcement learning](tutorials/03-reinforcement-learning/) — GRPO with
+   minimal, verifiable, and pathological reward examples.
+4. [Environments](tutorials/04-environments/) — GRPO with stateful OpenEnv
+   coding and Wordle environments, plus an agent-driven harness.
+
+The course index links the session videos and public Session 1 slides. Class
+2–4 imports retain their upstream README usage guides and Apache-2.0
+provenance, revisions, and hashes in [tutorials/SOURCES.md](tutorials/SOURCES.md).
 
 ## Guides
 
@@ -26,7 +36,3 @@ directories or separate project repositories.
   agent training systems.
 - `docs/terminal-bench-loop.md`: loop-shaped automation contract for training
   an approximately 2B open model toward Terminal-Bench performance above 40.
-
-- `examples/sergio-training-agents/`: source-preserving Apache-2.0 imports of
-  Sergio Paniego's Training Agents Class 2 (distillation), Class 3 (GRPO), and
-  Class 4 (RL environments) examples, with source revisions and file hashes.
