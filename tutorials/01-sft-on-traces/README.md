@@ -30,7 +30,7 @@ commands, not datasets, checkpoints, logs, or generated outputs.
 ## Local Smoke
 
 ```bash
-uv run examples/gemma4-pi-mono-sft/train_sft.py \
+uv run tutorials/01-sft-on-traces/train_sft.py \
   --model-id google/gemma-4-E2B-it \
   --dataset-id badlogicgames/pi-mono \
   --max-examples 512 \
@@ -65,7 +65,7 @@ hf jobs uv run \
   --label sweep=trackio-v1 \
   --label kind=sweep \
   --label variant=lr2e4-r16-len4k \
-  examples/gemma4-pi-mono-sft/train_sft.py \
+  tutorials/01-sft-on-traces/train_sft.py \
   --model-id google/gemma-4-E2B-it \
   --dataset-id badlogicgames/pi-mono \
   --output-dir outputs/gemma4-e2b-pi-mono-lr2e4-r16-len4k \
